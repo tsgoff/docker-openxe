@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-pass-openxe
+type: Opaque
+data:
+  password: eW91cnBhc3N3b3Jk
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openxe
+  labels:
+    app: openxe
+spec:
+  selector:
+    matchLabels:
+      app: openxe
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: openxe
+        tier: frontend
+    spec:
+      volumes:
+        - name: openxe-userdata-volume
+          hostPath:
+            path: /data/openxeuserdata
+            type: Directory
+      containers:
+      - image: bios/openxe:V.1.7
+        name: openxe
+        env:
+        - name: OPENXE_SITE
+          value: "https://openxe.bacon3.muc.cloud"
+        - name: OPENXE_PASS
+          valueFrom:
+            secretKeyRef:
+              name: password-openxe
+              key: password
+        - name: OPENXE_DB_HOST
+          value: openxe-mysql
+        - name: OPENXE_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass-openxe
+              key: password
+        ports:
+        - containerPort: 80
+          name: openxe
+        volumeMounts:
+        - name: openxe-userdata-volume
+          mountPath: /var/www/html/userdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openxe
+spec:
+  selector:
+    app: openxe
+  ports:
+  - name: openxe
+    protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openxe-mysql
+  labels:
+    app: openxe
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: openxe
+    tier: mysql
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openxe-mysql
+  labels:
+    app: openxe
+spec:
+  selector:
+    matchLabels:
+      app: openxe
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: openxe
+        tier: mysql
+    spec:
+      volumes:
+        - name: openxe-mysql-volume
+          hostPath:
+            path: /data/openxemysql
+            type: Directory
+      containers:
+      - image: mariadb
+        name: mysql
+        env:
+        - name: MYSQL_DATABASE
+          value: openxe
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass-openxe
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: openxe-mysql-volume
+          mountPath: /var/lib/mysql

@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  openxe:
+    image: bios/openxe:V.1.7
+    restart: always
+    ports:
+      - 8282:80
+    environment:
+      OPENXE_DB_HOST: db
+      OPENXE_DB_USER: openxe
+      OPENXE_DB_PASSWORD: yourpassword 
+      OPENXE_DB_NAME: openxe
+    volumes:
+      - ./userdata:/var/www/html/userdata
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: openxe
+      MYSQL_USER: openxe
+      MYSQL_PASSWORD: yourpassword
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - ./database/db:/var/lib/mysql
+
