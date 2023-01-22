@@ -10,3 +10,5 @@ RUN cd /var/www && \
     mv OpenXE-* html && \
     chown -R www-data:www-data html
 
+RUN curl -s https://raw.githubusercontent.com/OpenXE-org/OpenXE/ce11caac120a515d9c792839a690f353762b1643/www/setup/setup.php > www/setup/setup.php
+
