@@ -2,7 +2,7 @@ build:
   stage: build
   services: []
   variables:
-    TAG: V.1.7
+    TAG: ${CI_BUILD_REF_NAME}
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
