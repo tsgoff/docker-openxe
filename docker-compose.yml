@@ -12,6 +12,7 @@ services:
       OPENXE_DB_USER: openxe
       OPENXE_DB_PASSWORD: yourpassword 
       OPENXE_DB_NAME: openxe
+      TZ: Europe/Berlin
     volumes:
       - ./userdata:/var/www/html/userdata
 
