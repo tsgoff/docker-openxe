@@ -9,3 +9,7 @@ RUN cd /var/www && \
     rm -rf /var/www/html && \
     mv OpenXE-* html && \
     chown -R www-data:www-data html
+
+COPY limits.ini /usr/local/etc/php/conf.d/
+
+RUN apt update && apt -y install git sudo
