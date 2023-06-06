@@ -29,11 +29,16 @@ build-master:
   tags:
     - bacon2
 
+
 buildx:
   stage: build
-  services: []
   variables:
     TAG: ${CI_BUILD_REF_NAME}
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+  services:
+    - docker:19-dind    
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
