@@ -43,4 +43,4 @@ buildx:
   only:
     - buildx
   tags:
-    - runner02
+    - shell
