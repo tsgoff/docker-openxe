@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   openxe:
-    image: bios/openxe:V.1.7
+    image: bios/openxe:master
     restart: always
     ports:
       - 8282:80
