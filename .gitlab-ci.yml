@@ -2,7 +2,7 @@ build:
   stage: build
   services: []
   variables:
-    TAG: ${CI_BUILD_REF_NAME}
+    TAG: ${CI_COMMIT_REF_NAME}
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
@@ -17,7 +17,7 @@ build-master:
   stage: build
   services: []
   variables:
-    TAG: ${CI_BUILD_REF_NAME}
+    TAG: ${CI_COMMIT_REF_NAME}
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
