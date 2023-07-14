@@ -3,9 +3,10 @@ FROM bios/openxe-base
 ARG TAG
 
 RUN cd /var/www && \
+    echo ${TAG} && \
     curl -L -o /var/www/openxe.zip https://github.com/OpenXE-org/OpenXE/archive/refs/tags/${TAG}.zip && \
     unzip openxe.zip -x "OpenXE-*/userdata/wiki/XentralHandbuch/*" && \
-    echo ${TAG} && ls -la && file openxe.zip \
+    echo ${TAG} && ls -la && file openxe.zip && \
     rm -f openxe.zip && \
     rm -rf /var/www/html && \
     mv OpenXE-* html && \
