@@ -32,11 +32,16 @@ build-master:
 
 buildx:
   stage: build
+  image: docker:latest
   variables:
-    TAG: ${CI_BUILD_REF_NAME}
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
+    DOCKER_DRIVER: overlay2
+  services:
+    - docker:19.03.12-dind
+  before_script:
+    - apk add --no-cache curl jq
+    - docker run --privileged --rm tonistiigi/binfmt --install all
+    - docker buildx create --name mybuilder --use
+    - docker buildx inspect --bootstrap
   script:
     - mkdir -p $HOME/.docker
     - echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${CI_DOCKERHUB_AUTH}\"}}}" > $HOME/.docker/config.json
@@ -45,5 +50,3 @@ buildx:
     - docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm/v8 --push -t ${ACCOUNT}/${CI_PROJECT_NAME}:master . --file main
   only:
     - buildx
-  tags:
-    - shell
