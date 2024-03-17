@@ -40,7 +40,7 @@ buildx:
   before_script:
     - apk add --no-cache curl jq
     - docker run --privileged --rm tonistiigi/binfmt --install all
-    - docker buildx create --name mybuilder --use
+    - docker buildx create --name gitlab --use
     - docker buildx inspect --bootstrap
   script:
     - mkdir -p $HOME/.docker
